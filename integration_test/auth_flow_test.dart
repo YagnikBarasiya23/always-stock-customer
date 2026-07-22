@@ -7,16 +7,19 @@ import 'helpers.dart';
 
 /// Auth journey. Run against a FRESH install (no stored language/token):
 ///   xcrun simctl uninstall booted app.yagnik.alwaysStock
-/// Requires the backend on localhost:4000 with the demo account seeded.
+/// Requires the configured backend (UrlConstants.baseUrl) with the demo
+/// account seeded.
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('auth journey: splash → language → login/register/forgot → home', (
+  testWidgets('auth journey: splash → login/register/forgot → home', (
     tester,
   ) async {
     app.main();
 
-    // --- Splash renders, then routes to language picker (fresh install) ---
+    // --- Splash renders, then routes straight to the login screen ---
+    // Language selection is inline on the login screen now; there is no
+    // standalone language picker between splash and login.
     await pumpUntilFound(
       tester,
       find.text('Always Stock'),
@@ -24,18 +27,9 @@ void main() {
     );
     await pumpUntilFound(
       tester,
-      find.textContaining('Continue in'),
-      timeout: const Duration(seconds: 30),
-      reason: 'language selection screen after splash',
-    );
-    expect(find.text('English'), findsWidgets);
-
-    // --- Language: continue in English → login ---
-    await tapOn(tester, find.textContaining('Continue in'));
-    await pumpUntilFound(
-      tester,
       find.widgetWithText(FilledButton, 'Log in'),
-      reason: 'login screen',
+      timeout: const Duration(seconds: 30),
+      reason: 'login screen after splash',
     );
 
     // --- Login validation: empty submit ---

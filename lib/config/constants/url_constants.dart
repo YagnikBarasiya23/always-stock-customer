@@ -25,6 +25,7 @@ abstract class UrlConstants {
   
   
   /// Local dev fallback. Not used by default — pass one of these via
+  // ignore: unintended_html_in_doc_comment
   /// --dart-define=BASE_URL=<url> to target a local backend.
   // ignore: unused_element
   static String get _devFallback => defaultTargetPlatform == TargetPlatform.android
